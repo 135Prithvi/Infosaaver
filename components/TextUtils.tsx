@@ -8,7 +8,7 @@ export default function TextUtils() {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  function generateString(length) {
+  function generateString(length: string | number) {
     let result = " ";
     const charactersLength = characters.length;
     for (let i = 0; i < length; i++) {
@@ -27,11 +27,11 @@ export default function TextUtils() {
     setText(newText);
   };
 
-  const onchange = (event) => {
+  const onchange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
     setText(event.target.value);
   };
   return (
-    <div className="mx-28 my-28 text-center">
+    <div className="mx-28 my-28 text-center overscroll-y-none">
       <label
         htmlFor="message"
         className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
@@ -42,7 +42,7 @@ export default function TextUtils() {
         onChange={onchange}
         value={text}
         id="message"
-        rows="4"
+        rows={4}
         className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-cyan-100 dark:border-gray-600 dark:placeholder-gray-700 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
         placeholder="Enter Array..."
       ></textarea>
