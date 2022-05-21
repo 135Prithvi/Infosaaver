@@ -1,7 +1,7 @@
 import React from 'react'
 import Creds from '../components/Creds'
 
-export default function sam3()   {
+export default function Auth()   {
   return (
     <div><Creds/></div>
   )

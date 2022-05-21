@@ -1,22 +1,22 @@
 import SideBar from '../components/SideBar'
-import { app, db } from '../lib/fireConnect'
+import {  db } from '../lib/fireConnect'
 import { collection, addDoc, getDocs } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import SendIcon from '@mui/icons-material/Send';
-import { useSession, signOut, signIn } from "next-auth/react"
+import { useSession} from "next-auth/react"
 
-export default function sam2() {
+export default function Chat() {
   // initialization
   const dbInstance = collection(db, 'messages')
   const [messg, setMessg] = useState('')
   const [sender, setSender] = useState('')
-  const [notesArray, setNotesArray] = useState([])
+  const [notesArray, setNotesArray] = useState<any[]>([])
   const [showModal, setShowModal] = useState('')
   const { data: session } = useSession()
   useEffect(() => {
     getNotes()
-  }, [])
+  }, [100])
   const getNotes = () => {
     getDocs(dbInstance).then((data) => {
       setNotesArray(
@@ -25,13 +25,12 @@ export default function sam2() {
         })
       )
     })
-    console.log(session?.user.name);
   }
   async function AddDoc(event: any) {
     event.preventDefault()
     await addDoc(dbInstance, {
       message: messg,
-      sender: session?.user.name!==undefined? session?.user.name:  "Nothing",
+      sender: session?.user?.name!==undefined? session?.user.name:  "Nothing",
     }).then(() => {
       setMessg('')
       setSender('')
@@ -47,6 +46,7 @@ export default function sam2() {
       draggable: true,
     })
   }
+  
   return (
     <div className="">
       <div className="grid w-full  sm:max-w-sm overscroll-y-none">
@@ -95,15 +95,16 @@ export default function sam2() {
           <SideBar />
         </div>
       </div>
-      <div className={`space-y-3  overflow-y-auto flex-grow   `}>
+      <div className={`space-y-3  overflow-y-auto flex-grow  mx-5 `}>
         {notesArray.map((note) => {
           return (
-            <div className="mr-auto ml-auto   max-w-sm ">
-              <a className="w-sm block  rounded-lg border-2  border-gray-300 bg-white p-6 px-1 shadow-lg hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
-                <p className="font-normal text-gray-700 dark:text-gray-100">
+            <div className={`${session?.user?.name==note.sender ? "ml-auto" : "mr-auto" }    max-w-sm `} key={note.sender}>
+              <a className="w-sm block  rounded-lg border-2  border-gray-300 bg-white p-3 px-2 shadow-lg hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+                <p className={`   text-gray-700 dark:text-gray-100`}>
                   {note.message}
                 </p>
               </a>
+              <p className={`${session?.user?.name==note.sender ? "font-bold" : "font-medium" }   text-gray-700 dark:text-gray-100`}>{note.sender}</p>
             </div>
           )
         })}
@@ -114,9 +115,9 @@ export default function sam2() {
             <div className="mb-6">
               <label
                 htmlFor="text"
-                className="mb-2 block text-sm font-bold text-gray-900 dark:text-gray-300"
+                className="mb-2 block text-md font-bold text-gray-900 dark:text-gray-300"
               >
-                 {session?.user.name!==undefined? session?.user.name:  "Nothing"}
+                 {session?.user?.name!==undefined? session?.user.name:  "Nothing"}
               </label>
               <div className="inline-flex space-x-4 w-full ">
                 <input

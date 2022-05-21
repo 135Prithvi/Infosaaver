@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import FooTer from '../components/FooTer'
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+  const AnyComponent = Component as any;
   const [progress, setProgress] = useState(0)
   const router = useRouter()
   useEffect(() => {
@@ -28,7 +29,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
       />
       <ToastContainer />
       <NavBar></NavBar>
-      <Component {...pageProps} />
+      <AnyComponent {...pageProps} />
       <FooTer />
     </SessionProvider>
   )
