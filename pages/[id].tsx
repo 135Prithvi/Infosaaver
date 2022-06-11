@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 import dbConnect from '../lib/dbConnect'
 import User from '../models/User'
 import { toast } from 'react-toastify'
@@ -9,13 +8,12 @@ import { toast } from 'react-toastify'
 const PetPage = ({ user }: any) => {
   const router = useRouter()
   const [message, setMessage] = useState('')
-  const nameInputRef = useRef<HTMLInputElement>(null!);
-  const emailInputRef = useRef<HTMLInputElement>(null!);
+  const nameInputRef = useRef<HTMLInputElement>(null!)
+  const emailInputRef = useRef<HTMLInputElement>(null!)
   const [showModal, setShowModal] = useState('null')
 
   const handleEdit = async (event: any) => {
     setShowModal('visible')
-    console.log('Hi am Iron man')
   }
 
   const newUserHandler = async (event: any) => {
@@ -77,16 +75,16 @@ const PetPage = ({ user }: any) => {
 
   return (
     <>
-      <div className="sm:mx-48 mx-10 my-10 sm:my-14 place-items-center space-y-10 ">
+      <div className="mx-10 my-10 place-items-center space-y-10 sm:mx-48 sm:my-14 ">
         {showModal == 'visible' ? (
           <div
             id="authentication-modal"
             tabIndex={-1}
-            className={`${showModal} h-modal fixed top-0 right-0 left-0 z-50 w-full overflow-y-auto overflow-x-hidden md:inset-0 grid place-items-center  md:h-full`}
+            className={`${showModal} fixed top-0 right-0 left-0 z-50 grid h-modal w-full place-items-center overflow-y-auto overflow-x-hidden md:inset-0  md:h-full`}
           >
-            <div className="relative h-full w-full max-w-md p-4 md:h-auto">
+            <div className="relative  h-full w-full max-w-md p-4 md:h-auto">
               {/* <!-- Modal content --> */}
-              <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
+              <div className="relative rounded-lg border-2  border-gray-300  bg-white shadow dark:bg-gray-700">
                 <div className="flex justify-end p-2">
                   <button
                     type="button"
@@ -123,7 +121,7 @@ const PetPage = ({ user }: any) => {
                       type="email"
                       id="email"
                       ref={emailInputRef}
-                      className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-white focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                      className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                       required={true}
                     />
                   </div>
@@ -154,15 +152,15 @@ const PetPage = ({ user }: any) => {
             </div>
           </div>
         ) : null}
-{/* className="block  rounded-lg border border-gray-200 bg-white  shadow-md hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700" */}
+        {/* className="block  rounded-lg border border-gray-200 bg-white  shadow-md hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700" */}
         <>
-          <a
-            className="text-md mx-2  mb-1 block rounded-lg   py-5  px-5 pr-4 pl-3 text-center font-medium  border-2  border-gray-200 bg-white  shadow-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
-          >
+          <a className="text-md mx-2  mb-1 block rounded-lg   border-2  border-gray-300 bg-white py-5 px-5 pr-4  pl-3  text-center font-medium  shadow-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
               {user.name}
             </h5>
-            <p className="font-normal text-gray-700 dark:text-gray-100">{user.email}</p>
+            <p className="font-normal text-gray-700 dark:text-gray-100">
+              {user.email}
+            </p>
           </a>
           <div className="flex">
             <button

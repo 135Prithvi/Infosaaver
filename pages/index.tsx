@@ -38,5 +38,5 @@ export async function getServerSideProps() {
     user._id = user._id.toString()
     return user
   })
-  return { props: { users: users } }
+  return { props: { users } }
 }

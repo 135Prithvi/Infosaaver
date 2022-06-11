@@ -1,11 +1,14 @@
 import SideBar from '../components/SideBar'
-import {  db } from '../lib/fireConnect'
+import { db } from '../lib/fireConnect'
 import { collection, addDoc, getDocs } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import SendIcon from '@mui/icons-material/Send';
-import { useSession} from "next-auth/react"
-
+import SendIcon from '@mui/icons-material/Send'
+import { useSession } from 'next-auth/react'
+import Image from 'next/image'
+import Auth from './Auth'
+import { useRouter } from 'next/router'
+import Layout from '../components/Layout'
 export default function Chat() {
   // initialization
   const dbInstance = collection(db, 'messages')
@@ -14,9 +17,11 @@ export default function Chat() {
   const [notesArray, setNotesArray] = useState<any[]>([])
   const [showModal, setShowModal] = useState('')
   const { data: session } = useSession()
+  const nothing = "Nothing"
+  const router = useRouter()
   useEffect(() => {
     getNotes()
-  }, [100])
+  }, [AddDoc])
   const getNotes = () => {
     getDocs(dbInstance).then((data) => {
       setNotesArray(
@@ -30,13 +35,13 @@ export default function Chat() {
     event.preventDefault()
     await addDoc(dbInstance, {
       message: messg,
-      sender: session?.user?.name!==undefined? session?.user.name:  "Nothing",
+      sender:
+        session?.user?.name !== undefined ? session?.user?.name : nothing,
     }).then(() => {
       setMessg('')
       setSender('')
     })
-    
-    
+
     toast('🦄 Added Succesfully', {
       position: 'top-center',
       autoClose: 1000,
@@ -46,19 +51,21 @@ export default function Chat() {
       draggable: true,
     })
   }
-  
+
   return (
     <div className="">
-      <div className="grid w-full  sm:max-w-sm overscroll-y-none">
+      <div className="grid w-full  sm:max-w-sm ">
+        <span className="sr-only">Open main menu</span>
         <button
           type="button"
-          className="  inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-blue-500 focus:outline-none "
+          className="  text-black-500 inline-flex w-20 items-center rounded-lg p-2 text-sm hover:bg-gray-50  hover:text-blue-500 focus:outline-none "
           aria-expanded="false"
         >
-          <span className="sr-only">Open main menu</span>
           <div className="space-x-10">
             <svg
-              className={`absolute mt-0  h-6 w-6`}
+              className={`absolute mt-0  h-6 w-6 ${
+                showModal == 'visible' ? 'hidden' : 'visible'
+              }`}
               fill="currentColor"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
@@ -87,6 +94,7 @@ export default function Chat() {
             </svg>
           </div>
         </button>
+
         <div
           className={`${
             showModal == 'visible' ? 'visible' : 'hidden'
@@ -95,35 +103,53 @@ export default function Chat() {
           <SideBar />
         </div>
       </div>
-      <div className={`space-y-3  overflow-y-auto flex-grow  mx-5 `}>
+
+      {session ? <><div className={`mx-5  flex-grow space-y-3  overflow-y-auto `}>
         {notesArray.map((note) => {
           return (
-            <div className={`${session?.user?.name==note.sender ? "ml-auto" : "mr-auto" }    max-w-sm `} key={note.sender}>
-              <a className="w-sm block  rounded-lg border-2  border-gray-300 bg-white p-3 px-2 shadow-lg hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
-                <p className={`   text-gray-700 dark:text-gray-100`}>
-                  {note.message}
+            <>
+              <div
+                className={`${
+                  session?.user?.name == note.sender ? 'ml-auto' : 'mr-auto'
+                }    sm:max-w-sm w-auto `}
+                key={note.sender}
+              >
+                <a className="w-sm block  rounded-lg border-2  border-gray-300 bg-white p-3 px-2 shadow-lg hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+                  <p className={`   text-black dark:text-black`}>
+                    {note.message}
+                  </p>
+                </a>
+                <p
+                  className={`${
+                    session?.user?.name == note.sender
+                      ? 'font-bold'
+                      : 'font-medium'
+                  }   text-black-700 dark:text-black-100`}
+                >
+                  {note.sender}
                 </p>
-              </a>
-              <p className={`${session?.user?.name==note.sender ? "font-bold" : "font-medium" }   text-gray-700 dark:text-gray-100`}>{note.sender}</p>
-            </div>
+              </div>
+            </>
           )
         })}
       </div>
-      <div className="container fixed rounded-xl bottom-0 inline-block max-w-full content-center space-x-10 border-t-2 border-black bg-slate-300 px-5 align-middle sm:px-10">
+      <div className="container sticky bottom-0 inline-block max-w-full content-center space-x-10 rounded-xl border-t-2 border-black bg-slate-300 px-5 align-middle sm:px-10">
         <form onSubmit={AddDoc}>
           <div className="  mt-6">
             <div className="mb-6">
               <label
                 htmlFor="text"
-                className="mb-2 block text-md font-bold text-gray-900 dark:text-gray-300"
+                className="text-md dark:text-black-300 mb-2 block font-bold text-black"
               >
-                 {session?.user?.name!==undefined? session?.user.name:  "Nothing"}
+                {session?.user?.name !== undefined
+                  ? session?.user.name
+                  : nothing}
               </label>
-              <div className="inline-flex space-x-4 w-full ">
+              <div className="inline-flex w-full space-x-4 ">
                 <input
                   type="text"
                   id="text"
-                  className="w-full max-w-full  rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                  className="w-full max-w-full  rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   required={true}
                   onChange={(e) => setMessg(e.target.value)}
                   value={messg}
@@ -132,14 +158,13 @@ export default function Chat() {
                   type="submit"
                   className=" rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
-                  <SendIcon/>
+                  <SendIcon />
                 </button>
               </div>
-              
             </div>
           </div>
         </form>
-      </div>
+      </div></>:<Layout>Nothing...</Layout>}
     </div>
   )
 }
